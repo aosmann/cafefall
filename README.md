@@ -1,16 +1,16 @@
 # cafefall
 
-Cafefall: a café quiz for the EduGames portal. The chef is a cat; hungry animals walk up and order toast, pizza, cake and more. Tap the dish on the menu shelf and answer its question: right, it's cooked and served with coins and a tip; wrong, it burns and a new question comes up for the same dish. Keep customers happy before their patience runs out.
+Cafefall: a 3D café quiz for the EduGames portal. Customers walk up to the counter and order; every dish is a question. Right: the chef cooks it and serves it, with coins and a tip. Wrong: it burns on the stove and a new question comes up for the same dish. Keep customers happy before their patience runs out.
 
 Play: https://aosmann.github.io/cafefall/
 
 - **Easy:** one customer at a time, one dish each, slow patience.
-- **Medium:** two or three customers waiting; you choose whom to serve.
+- **Medium:** two or three customers waiting; you choose whom to serve (tap their order ticket, or tap them).
 - **Hard:** a moving queue, faster patience, two-dish orders (two questions).
 - 3 right in a row doubles tips, 5 in a row triples them. Score = coins.
-- Answer with the big buttons or keys 1 · 2 · 3. Pause with Esc / P.
+- Answer with the buttons or keys 1 · 2 · 3 (with no question open, 1 · 2 · 3 picks an order). Pause with Esc / P.
 
-No build step, works offline after the first visit (service worker), installable on iPhone.
+No build step. three.js r170 is kept locally in `lib/`; everything works offline after the first visit (service worker) and installs on iPhone.
 `questions.js` and `flags/` are the shared EduGames bank, byte-identical to the other games. Never edit them here.
 
 ## EduGames contract (v1)
@@ -27,6 +27,8 @@ Café words in Romanian live in `game.js` (so `questions.js` stays identical).
 
 ## Credits
 
-- Animal heads: **Kenney – Animal Pack Redux**, CC0 (https://kenney.nl/assets/animal-pack-redux). Bodies, chef cat, food, café and sounds are original to this project.
+- 3D models: **KayKit – Restaurant Bits** and **KayKit – Character Pack: Adventurers** by Kay Lousberg, CC0 (https://kaylousberg.itch.io). Characters were trimmed (weapons and unused animations removed). Licence files are in `models/`.
+- 3D engine: [three.js](https://threejs.org) r170, MIT licence.
 - Country, capital and continent data: [mledoze/countries](https://github.com/mledoze/countries), Open Database License (ODbL 1.0).
 - Flags: [flag-icons](https://github.com/lipis/flag-icons), MIT licence, compressed into `flags/`.
+- Chef's hat, effects, interface and sounds are original to this project.
