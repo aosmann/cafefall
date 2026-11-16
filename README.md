@@ -8,6 +8,7 @@ Play: https://aosmann.github.io/cafefall/
 - **Medium:** two or three customers waiting; you choose whom to serve (tap their order ticket, or tap them).
 - **Hard:** a moving queue, faster patience, two-dish orders (two questions).
 - 3 right in a row doubles tips, 5 in a row triples them. Score = coins.
+- Every run has its own menu mixed from six kinds of food: fast food, Asian, breakfast, healthy, mains, desserts and drinks (36 dishes; 6 on Easy, 9 on Medium, 12 on Hard).
 - Answer with the buttons or keys 1 · 2 · 3 (with no question open, 1 · 2 · 3 picks an order). Pause with Esc / P.
 
 No build step. three.js r170 is kept locally in `lib/`; everything works offline after the first visit (service worker) and installs on iPhone.
@@ -27,6 +28,7 @@ Café words in Romanian live in `game.js` (so `questions.js` stays identical).
 
 ## Credits
 
+- Food: **Kenney – Food Kit 2.0**, CC0 (https://kenney.nl/assets/food-kit), 39 models in `models/food/`.
 - 3D models: **KayKit – Restaurant Bits** and **KayKit – Character Pack: Adventurers** by Kay Lousberg, CC0 (https://kaylousberg.itch.io). Characters were trimmed (weapons and unused animations removed). Licence files are in `models/`.
 - 3D engine: [three.js](https://threejs.org) r170, MIT licence.
 - Country, capital and continent data: [mledoze/countries](https://github.com/mledoze/countries), Open Database License (ODbL 1.0).

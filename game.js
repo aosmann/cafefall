@@ -18,14 +18,14 @@ function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className
    questions.js switches the shared words (Play, Difficulty, Resume…) to Romanian by itself.
    The café's own words live here so questions.js stays byte-identical to the other games. */
 const LANG=(EduQ.getLang&&EduQ.getLang())||'en';
-const RO={'tips':'bacșiș','Cook it right':'Gătește corect','Answer right. Serve it hot.':'Răspunde corect. Servește cald.','3D art: KayKit by Kay Lousberg (CC0)':'Grafică 3D: KayKit de Kay Lousberg (CC0)',
+const RO={'tips':'bacșiș','Cook it right':'Gătește corect','Answer right. Serve it hot.':'Răspunde corect. Servește cald.','3D art: KayKit and Kenney (CC0)':'Grafică 3D: KayKit și Kenney (CC0)',
  'Open the café':'Deschide cafeneaua','customers served':'clienți serviți','Walked out':'Au plecat','Burger':'Burger','Veggie burger':'Burger vegetarian','Stew':'Tocăniță','Chicken dinner':'Pulpă de pui',
  'Orders':'Comenzi','Order':'Comanda','Café closed':'Cafeneaua s-a închis',"Time's up":'Timpul a expirat','Run ended':'Jocul s-a terminat','Café open!':'Cafeneaua e deschisă!',
  'Tap an order to start cooking':'Atinge o comandă ca să începi să gătești','Yum!':'Delicios!','Burnt! Here is another one.':'Ars! Iată altă întrebare.','Cooked!':'Gata!',
  '3 in a row! Tips ×2':'3 la rând! Bacșiș ×2','5 in a row! Tips ×3':'5 la rând! Bacșiș ×3','Streak lost':'Serie pierdută','They left!':'A plecat!',
  'Every answer right. Five-star café!':'Toate răspunsurile corecte. Cafenea de cinci stele!','New best!':'Record nou!','Best':'Record','coins':'monede','Step 1 of 2':'Pasul 1 din 2','Step 2 of 2':'Pasul 2 din 2',
  'Worth another look':'Merită să le mai vezi','Play for':'Joacă','Seconds':'Secunde','Coins':'Monede','Answers right':'Răspunsuri corecte','Best streak':'Cea mai lungă serie','Run length':'Durata','Custom':'Personalizat',
- 'Result sent to your teacher.':'Rezultatul a fost trimis profesorului.','Setting up the kitchen…':'Pregătim bucătăria…','Knight':'Cavalerul','Mage':'Magul','Barbarian':'Barbarul','Ranger':'Arcașul','waiting':'așteaptă','served':'servit'};
+ 'Result sent to your teacher.':'Rezultatul a fost trimis profesorului.','Setting up the kitchen…':'Pregătim bucătăria…','Knight':'Cavalerul','Cheeseburger':'Cheeseburger','Hot dog':'Hot dog','Fries':'Cartofi prăjiți','Pizza':'Pizza','Taco':'Taco','Corn dog':'Corn dog','Sub sandwich':'Sandviș lung','Sushi':'Sushi','Maki rolls':'Rulouri maki','Dim sum':'Dim sum','Noodle box':'Tăiței la cutie','Rice balls':'Onigiri','Ramen':'Ramen','Pancakes':'Clătite','Waffle':'Vafă','Fried egg':'Ou ochi','Bacon':'Bacon','Croissant':'Croissant','Cereal':'Cereale','Coffee':'Cafea','Salad':'Salată','Veggie skewer':'Frigăruie de legume','Soup':'Supă','Steak':'Friptură','Cupcake':'Brioșă','Donut':'Gogoașă','Sundae':'Cupă de înghețată','Cake':'Tort','Muffin':'Muffin','Ice cream':'Înghețată','Frappé':'Frappé','Soda':'Suc','Mage':'Magul','Barbarian':'Barbarul','Ranger':'Arcașul','waiting':'așteaptă','served':'servit'};
 const L=s=>LANG==='ro'&&RO[s]!=null?RO[s]:s;
 const DIFFN=d=>DIFFNAME[d]||['','Easy','Medium','Hard'][d];
 const modeName=m=>m.kind==='o'?(LANG==='ro'?`${m.n} comenzi`:`${m.n} orders`):`${m.n} sec`;
@@ -34,18 +34,58 @@ function translateStatic(){if(LANG!=='ro')return;
     while(n=w.nextNode()){const p=n.parentElement;if(!p||p.closest('[data-noi18n],svg'))continue;const k=n.nodeValue.trim();if(k&&RO[k]!=null)n.nodeValue=n.nodeValue.replace(k,RO[k])}})}
 
 /* ======================= DATA ======================= */
-/* each dish: where it cooks, the model on the stove raw / cooked / burnt, and the plate that is served */
+/* each dish: its category, where it is made (pan, pot or the prep board), the model at the station raw / cooked / burnt,
+   and what is served. 'k:' models come from Kenney's Food Kit, the rest from KayKit. No raw model: the dish shows pale, then cooks. */
 const DISHES=[
- {id:'burger',name:'Burger',station:'pan',raw:'food_ingredient_burger_uncooked',cooked:'food_ingredient_burger_cooked',burnt:'food_ingredient_burger_trash',serve:'food_burger',plate:true},
- {id:'stew',name:'Stew',station:'pot',raw:'pot_A',cooked:'pot_A_stew',burnt:'pot_A_stew',burntTint:true,serve:'stew_bowl'},
- {id:'chicken',name:'Chicken dinner',station:'pan',raw:'food_ingredient_ham',cooked:'food_ingredient_ham_cooked',burnt:'food_ingredient_ham_trash',serve:'food_dinner'},
- {id:'veggie',name:'Veggie burger',station:'pan',raw:'food_ingredient_vegetableburger_uncooked',cooked:'food_ingredient_vegetableburger_cooked',burnt:'food_ingredient_burger_trash',serve:'food_vegetableburger',plate:true}];
+ /* fast food */
+ {id:'burger',cat:'fast',name:'Burger',station:'pan',raw:'food_ingredient_burger_uncooked',cooked:'food_ingredient_burger_cooked',burnt:'food_ingredient_burger_trash',serve:'food_burger',plate:true},
+ {id:'cheeseburger',cat:'fast',name:'Cheeseburger',station:'pan',raw:'food_ingredient_burger_uncooked',cooked:'food_ingredient_burger_cooked',burnt:'food_ingredient_burger_trash',serve:'k:Burger.Cheese',plate:true},
+ {id:'hotdog',cat:'fast',name:'Hot dog',station:'pan',raw:'k:Hot.Dog.Raw',serve:'k:Hot.Dog',plate:true},
+ {id:'fries',cat:'fast',name:'Fries',station:'pot',raw:'k:Fries.Empty',serve:'k:Fries'},
+ {id:'pizza',cat:'fast',name:'Pizza',station:'pan',serve:'k:Pizza'},
+ {id:'taco',cat:'fast',name:'Taco',station:'pan',serve:'k:Taco',plate:true},
+ {id:'corndog',cat:'fast',name:'Corn dog',station:'pan',serve:'k:Corn.Dog',plate:true},
+ {id:'sub',cat:'fast',name:'Sub sandwich',station:'board',serve:'k:Sub',plate:true},
+ /* asian */
+ {id:'sushi',cat:'asian',name:'Sushi',station:'board',serve:'k:Sushi.Salmon',count:3,plate:true},
+ {id:'maki',cat:'asian',name:'Maki rolls',station:'board',serve:'k:Maki.Salmon',count:3,plate:true},
+ {id:'dimsum',cat:'asian',name:'Dim sum',station:'pot',raw:'k:Steamer',serve:'k:Dim.Sum'},
+ {id:'noodles',cat:'asian',name:'Noodle box',station:'pot',serve:'k:Chinese'},
+ {id:'onigiri',cat:'asian',name:'Rice balls',station:'board',serve:'k:Rice.Ball',count:2,plate:true},
+ {id:'ramen',cat:'asian',name:'Ramen',station:'pot',serve:'k:Bowl.Broth'},
+ /* breakfast */
+ {id:'pancakes',cat:'breakfast',name:'Pancakes',station:'pan',serve:'k:Pancakes'},
+ {id:'waffle',cat:'breakfast',name:'Waffle',station:'pan',serve:'k:Waffle',plate:true},
+ {id:'eggs',cat:'breakfast',name:'Fried egg',station:'pan',raw:'k:Egg',cooked:'k:Egg.Cooked',serve:'k:Egg.Cooked',plate:true},
+ {id:'bacon',cat:'breakfast',name:'Bacon',station:'pan',raw:'k:Bacon.Raw',cooked:'k:Bacon',serve:'k:Bacon',plate:true},
+ {id:'croissant',cat:'breakfast',name:'Croissant',station:'board',serve:'k:Croissant',plate:true},
+ {id:'cereal',cat:'breakfast',name:'Cereal',station:'board',serve:'k:Bowl.Cereal'},
+ {id:'coffee',cat:'breakfast',name:'Coffee',station:'board',serve:'k:Cup.Coffee',small:true},
+ /* healthy */
+ {id:'salad',cat:'healthy',name:'Salad',station:'board',serve:'k:Salad'},
+ {id:'skewer',cat:'healthy',name:'Veggie skewer',station:'pan',serve:'k:Skewer.Vegetables',plate:true},
+ {id:'soup',cat:'healthy',name:'Soup',station:'pot',serve:'k:Bowl.Soup'},
+ {id:'veggie',cat:'healthy',name:'Veggie burger',station:'pan',raw:'food_ingredient_vegetableburger_uncooked',cooked:'food_ingredient_vegetableburger_cooked',burnt:'food_ingredient_burger_trash',serve:'food_vegetableburger',plate:true},
+ /* mains */
+ {id:'stew',cat:'mains',name:'Stew',station:'pot',raw:'pot_A',cooked:'pot_A_stew',burnt:'pot_A_stew',burntTint:true,serve:'stew_bowl'},
+ {id:'chicken',cat:'mains',name:'Chicken dinner',station:'pan',raw:'food_ingredient_ham',cooked:'food_ingredient_ham_cooked',burnt:'food_ingredient_ham_trash',serve:'food_dinner'},
+ {id:'steak',cat:'mains',name:'Steak',station:'pan',raw:'k:Meat.Raw',cooked:'k:Meat.Cooked',serve:'k:Meat.Cooked',plate:true},
+ /* desserts and drinks */
+ {id:'cupcake',cat:'sweet',name:'Cupcake',station:'board',serve:'k:Cupcake',small:true},
+ {id:'donut',cat:'sweet',name:'Donut',station:'board',serve:'k:Donut.Sprinkles',plate:true},
+ {id:'sundae',cat:'sweet',name:'Sundae',station:'board',serve:'k:Sundae',small:true},
+ {id:'cake',cat:'sweet',name:'Cake',station:'board',serve:'k:Cake'},
+ {id:'muffin',cat:'sweet',name:'Muffin',station:'board',serve:'k:Muffin',small:true},
+ {id:'icecream',cat:'sweet',name:'Ice cream',station:'board',serve:'k:Ice.Cream',small:true},
+ {id:'frappe',cat:'sweet',name:'Frappé',station:'board',serve:'k:Frappe',small:true},
+ {id:'soda',cat:'sweet',name:'Soda',station:'board',serve:'k:Soda.Glass',small:true}];
+const CATS=['fast','asian','breakfast','healthy','mains','sweet'];
 const DISH=id=>DISHES.find(d=>d.id===id);
 const CUSTOMERS=[{id:'Knight',name:'Knight'},{id:'Mage',name:'Mage'},{id:'Barbarian',name:'Barbarian'},{id:'Rogue_Hooded',name:'Ranger'}];
 /* difficulty: how many wait at once, patience (seconds), dishes on the menu, two-dish orders, moving queue */
-const LV={1:{max:1,min:1,pat:45,dishes:3,two:false,gap:[.6,.9]},
-          2:{max:3,min:2,pat:34,dishes:4,two:false,gap:[4,7]},
-          3:{max:3,min:2,pat:24,dishes:4,two:true,gap:[2.6,4],move:true}};
+const LV={1:{max:1,min:1,pat:45,dishes:6,two:false,gap:[.6,.9]},
+          2:{max:3,min:2,pat:34,dishes:9,two:false,gap:[4,7]},
+          3:{max:3,min:2,pat:24,dishes:12,two:true,gap:[2.6,4],move:true}};
 const SLOT_Z=[-2,.3,2.6];          /* where customers stand along the counter, front of the queue first */
 const STAND_X=3.75,SERVE_X=1.85,COUNTER_TOP=1.0;
 const ENTRY=[4.4,0,8.5];
@@ -119,11 +159,26 @@ Object.assign(sun.shadow.camera,{left:-11,right:11,top:11,bottom:-11,near:1,far:
 const loader=new GLTFLoader();
 let KITMAT=null;const kit={};
 const loadGLTF=u=>new Promise((res,rej)=>loader.load(u,res,undefined,rej));
+let KMAT=null;
 async function loadKit(names,onStep){
-  for(const n of names){const g=await loadGLTF(`models/kit/${n}.gltf`);
-    g.scene.traverse(m=>{if(m.isMesh){if(!KITMAT){KITMAT=m.material;KITMAT.side=THREE.FrontSide}else{const old=m.material;m.material=KITMAT;if(old!==KITMAT){if(old.map&&old.map!==KITMAT.map)old.map.dispose();old.dispose()}}m.castShadow=true;m.receiveShadow=true}});
-    kit[n]=g.scene;onStep&&onStep()}}
-const BURNT_MAT=()=>{const m=KITMAT.clone();m.color=new THREE.Color('#2a221e');return m};
+  for(const n of names){
+    if(n.startsWith('k:')){const g=await loadGLTF(`models/food/${n.slice(2)}.glb`);
+      g.scene.traverse(m=>{if(m.isMesh){if(!KMAT)KMAT=m.material;else{const old=m.material;m.material=KMAT;if(old!==KMAT){if(old.map&&old.map!==KMAT.map)old.map.dispose();old.dispose()}}m.castShadow=true;m.receiveShadow=true}});
+      /* Kenney food is modelled at real size: scale each piece to the same footprint as the KayKit dishes, resting on y=0 */
+      const b=new THREE.Box3().setFromObject(g.scene),sz=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
+      const k=.72/Math.max(sz.x,sz.z,sz.y*.8,.001);const w=new THREE.Group();g.scene.position.set(-c.x*k,-b.min.y*k,-c.z*k);g.scene.scale.setScalar(k);w.add(g.scene);kit[n]=w}
+    else{const g=await loadGLTF(`models/kit/${n}.gltf`);
+      g.scene.traverse(m=>{if(m.isMesh){if(!KITMAT){KITMAT=m.material;KITMAT.side=THREE.FrontSide}else{const old=m.material;m.material=KITMAT;if(old!==KITMAT){if(old.map&&old.map!==KITMAT.map)old.map.dispose();old.dispose()}}m.castShadow=true;m.receiveShadow=true}});
+      kit[n]=g.scene}
+    onStep&&onStep()}}
+const tinted={};
+function tintMat(src,key,color){const id=key+src.uuid;if(!tinted[id]){const m=src.clone();m.color=new THREE.Color(color);tinted[id]=m}return tinted[id]}
+function tint(o,key,color){o.traverse(m=>{if(m.isMesh)m.material=tintMat(m.material,key,color)})}
+/* a dish as served: one piece, or a few small pieces, on a plate if it needs one */
+function dishModel(d){const g=new THREE.Group();const n=d.count||1,src=kit[d.serve];
+  for(let i=0;i<n;i++){const o=src.clone(true);if(n>1){o.scale.setScalar(.55);const a=i/n*Math.PI*2+.4;o.position.set(Math.cos(a)*.2,0,Math.sin(a)*.2)}else if(d.small)o.scale.setScalar(.75);g.add(o)}
+  if(d.plate){const p=kit.plate.clone(true);g.add(p);g.children.forEach(c=>{if(c!==p)c.position.y+=.08})}
+  return g}
 function inst(n,x=0,y=0,z=0,ry=0,parent=scene){const o=kit[n].clone(true);o.position.set(x,y,z);o.rotation.y=ry;parent.add(o);return o}
 const chars={};let CLIPS=[];
 async function loadChars(onStep){
@@ -156,7 +211,7 @@ function buildKitchen(){
   /* the counter with the stove at the far end */
   for(const z of [-4,-2,0,2])inst('kitchencounter_straight_A',1.2,0,z,Math.PI/2);
   inst('stove_multi_countertop',1.2,1,-4,Math.PI/2);
-  inst('cuttingboard',.9,1,-2.9,Math.PI/2);inst('food_ingredient_tomato_slices',.9,1.08,-2.9);
+  inst('cuttingboard',.9,1,-2.9,Math.PI/2);boardDeco=inst('food_ingredient_tomato_slices',.9,1.08,-2.9);
   /* the kitchen line along the back walls */
   inst('fridge_A_decorated',-4.6,0,-5.1);inst('kitchencounter_straight_A_decorated',-2.4,0,-5.1);
   inst('kitchencounter_sink_backsplash',-.4,0,-5.1);inst('stove_multi_decorated',1.6,0,-5.1);
@@ -174,13 +229,19 @@ function buildStation(){
   flames=new THREE.Group();const fm=new THREE.MeshBasicMaterial({color:'#ff8a2a',transparent:true,opacity:.9});
   for(let i=0;i<6;i++){const f=new THREE.Mesh(new THREE.ConeGeometry(.07,.22,6),fm);const a=i/6*Math.PI*2;f.position.set(Math.cos(a)*.28,0,Math.sin(a)*.28);flames.add(f)}
   flames.visible=false;scene.add(flames)}
+const BOARD_POS=new THREE.Vector3(.9,1.06,-2.9);let boardDeco=null;
+const stationPos=d=>d.station==='pan'?PAN_POS:d.station==='pot'?POT_POS:BOARD_POS;
 function setStation(dish,state){
   if(stationItem){scene.remove(stationItem);stationItem=null}
+  if(boardDeco)boardDeco.visible=!(dish&&dish.station==='board');
   if(!dish){flames.visible=false;return}
-  const n=state==='raw'?dish.raw:state==='cooked'?dish.cooked:dish.burnt;const p=dish.station==='pan'?PAN_POS:POT_POS;
-  stationItem=inst(n,p.x,p.y+(dish.station==='pan'?.08:0),p.z);
-  if(state==='burnt'&&dish.burntTint){const m=BURNT_MAT();stationItem.traverse(o=>{if(o.isMesh)o.material=m})}
-  flames.position.set(p.x,p.y-.04,p.z);flames.visible=state!=='raw'||true}
+  const p=stationPos(dish);
+  const name=state==='raw'?dish.raw:state==='cooked'?dish.cooked:dish.burnt;
+  if(name){stationItem=inst(name,p.x,p.y+(dish.station==='pan'?.08:0),p.z)}
+  else{stationItem=dishModel(dish);stationItem.position.set(p.x,p.y+(dish.station==='pan'?.06:0),p.z);if(dish.station==='pan'&&!dish.plate)stationItem.scale.setScalar(.85);scene.add(stationItem)}
+  if(state==='raw'&&!dish.raw)tint(stationItem,'raw','#f4e3c4');
+  if(state==='burnt'&&(!dish.burnt||dish.burntTint))tint(stationItem,'burnt','#2a221e');
+  flames.position.set(p.x,p.y-.04,p.z);flames.visible=dish.station!=='board'}
 
 /* soft round particles for steam and smoke */
 const puffTex=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const g=x.createRadialGradient(32,32,2,32,32,30);
@@ -200,8 +261,7 @@ function makeThumbs(){
   const r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});r.setSize(128,128);r.setPixelRatio(1);r.outputColorSpace=THREE.SRGBColorSpace;r.toneMapping=THREE.ACESFilmicToneMapping;
   const sc=new THREE.Scene();sc.add(new THREE.HemisphereLight('#fff6e8','#b98a5a',1.6));const dl=new THREE.DirectionalLight('#fff',2);dl.position.set(3,6,4);sc.add(dl);
   const c=new THREE.OrthographicCamera(-1,1,1,-1,.1,50);
-  for(const d of DISHES){const o=kit[d.serve].clone(true);const g=new THREE.Group();g.add(o);
-    if(d.plate){const p=kit.plate.clone(true);g.add(p);o.position.y=.08}
+  for(const d of DISHES){const g=dishModel(d);
     sc.add(g);const b=new THREE.Box3().setFromObject(g),ctr=b.getCenter(new THREE.Vector3()),sz=b.getSize(new THREE.Vector3()).length()/2*1.05;
     c.left=-sz;c.right=sz;c.top=sz;c.bottom=-sz;c.updateProjectionMatrix();c.position.copy(ctr).add(new THREE.Vector3(3,4,3).normalize().multiplyScalar(10));c.lookAt(ctr);
     r.render(sc,c);thumbs[d.id]=r.domElement.toDataURL();sc.remove(g)}
@@ -243,7 +303,11 @@ const timers=[];/* game-time timers: they wait while the game is paused */
 function later(sec,fn){timers.push({t:gameT+sec,fn})}
 const tweens=[];function tween(dur,step,done){tweens.push({t:0,dur,step,done})}
 const lvl=()=>LV[DIFF()]||LV[2];
-const menuDishes=()=>DISHES.slice(0,lvl().dishes);
+let runMenu=DISHES.slice(0,6);
+/* today's menu: a mix from every category, different each run */
+function pickMenu(n){const by={};CATS.forEach(c=>by[c]=EduQ.shuffle(DISHES.filter(d=>d.cat===c)));const out=[];
+  while(out.length<n){let added=false;for(const c of EduQ.shuffle(CATS.slice())){if(out.length>=n)break;const d=by[c].shift();if(d){out.push(d);added=true}}if(!added)break}return out}
+const menuDishes=()=>runMenu;
 const qid=q=>q.q+'|'+q.answer+'|'+(q.img||'');
 function nextQ(){let q,d=0;do{q=next();d++}while(seen.has(qid(q))&&d<40);seen.add(qid(q));if(seen.size>60)seen=new Set();return q}
 
@@ -306,7 +370,7 @@ function tapCustomer(c){if(state!=='play'||cur||c.st!=='wait')return;unlock();co
 function serve(c,idx){
   const dish=DISH(c.order[idx]);cur={c,idx,dish};S.tap();hint('');hintShown=true;
   $('cDish').src=thumbs[dish.id];$('cName').textContent=L(dish.name);
-  setStation(dish,'raw');chef.walkTo(-.35,dish.station==='pan'?-4.3:-3.6,Math.PI/2,()=>{if(cur&&cur.dish===dish)chef.play('Interact')});
+  setStation(dish,'raw');chef.walkTo(-.35,dish.station==='pan'?-4.3:dish.station==='pot'?-3.6:-2.9,Math.PI/2,()=>{if(cur&&cur.dish===dish)chef.play('Interact')});
   askQ();show('card',true);paintTickets();fitCamera()}
 function askQ(){
   Q=nextQ();answered=false;const qt=$('qtext'),im=$('qimg');qt.textContent='';if(Q.code)qt.append(el('span','code',Q.code));qt.append(Q.q);
@@ -338,13 +402,13 @@ function answer(i){
   paintHud();
   toParent({type:'edu-progress',game:GAME,score:coins,right,asked,served,coins})}
 function cook(c,idx,dish){
-  setStation(dish,'cooked');S.sizzle();chef.play('Cheer',{once:true,then:()=>chef.play('Idle')});
-  const sp=(dish.station==='pan'?PAN_POS:POT_POS).clone();puff(sp.clone().setY(sp.y+.2),'#ffffff',8,{up:1.4,size:.8});
+  setStation(dish,'cooked');if(dish.station==='board')S.plate();else S.sizzle();chef.play('Cheer',{once:true,then:()=>chef.play('Idle')});
+  const sp=stationPos(dish).clone();if(dish.station!=='board')puff(sp.clone().setY(sp.y+.2),'#ffffff',8,{up:1.4,size:.8});
   const cookT=reduced?.15:.6;
   later(cookT,()=>{
     setStation(null);
     /* the plate flies from the stove to the counter in front of the customer */
-    const g=new THREE.Group();const food=kit[dish.serve].clone(true);g.add(food);if(dish.plate){g.add(kit.plate.clone(true));food.position.y=.08}
+    const g=dishModel(dish);
     const from=sp.clone().setY(sp.y+.25),to=new THREE.Vector3(SERVE_X,COUNTER_TOP,SLOT_Z[Math.max(0,c.slot)]+(c.order.length>1?(idx?.45:-.45):0));
     g.position.copy(from);scene.add(g);c.plates.push(g);
     const done=()=>{g.position.copy(to);S.plate();coins+=PRICE;const s=toScreen(to);flyCoins(s.x,s.y,2);S.coins(1);popText(s.x,s.y-30,`+${PRICE}`);
@@ -357,7 +421,7 @@ function cook(c,idx,dish){
     tween(.55,t=>{const e=easeInOut(t);g.position.lerpVectors(from,to,e);g.position.y+=Math.sin(t*Math.PI)*1.6;g.rotation.y=t*Math.PI*2},done)})}
 function burn(dish){
   setStation(dish,'burnt');S.burn();chef.play('Hit_A',{once:true,then:()=>chef.play('Interact')});
-  const sp=(dish.station==='pan'?PAN_POS:POT_POS).clone();puff(sp.clone().setY(sp.y+.2),'#4a4440',12,{up:1.8,size:1,life:1.5})}
+  const sp=stationPos(dish).clone();puff(sp.clone().setY(sp.y+.2),'#4a4440',12,{up:1.8,size:1,life:1.5})}
 $('ans').querySelectorAll('button').forEach((b,i)=>b.addEventListener('click',()=>answer(i)));
 /* tapping a customer in the kitchen works like tapping the ticket */
 canvas.addEventListener('pointerdown',e=>{if(state!=='play'||cur)return;let best=null,bd=70;
@@ -373,7 +437,7 @@ function start(){
   unlock();clearRun();
   coins=served=finished=walkouts=right=asked=streak=bestStreak=spawned=0;missed=[];seen=new Set();gameT=0;
   const m=MODE();timeLeft=m.kind==='t'?m.n:0;runStart=performance.now();
-  next=stream(curTopic(),DIFF(),EMBED_REG?{regions:EMBED_REG}:undefined);
+  next=stream(curTopic(),DIFF(),EMBED_REG?{regions:EMBED_REG}:undefined);runMenu=pickMenu(lvl().dishes);
   panel(null);show('top',true);paintHud();fitCamera();
   banner(L('Café open!'),`${curTopic().name} · ${DIFFN(DIFF())} · ${modeName(m)}`);S.bell();
   state='play';spawnT=reduced?.3:.8;
@@ -484,7 +548,8 @@ function frame(now){
 const KIT_NAMES=['floor_kitchen','wall','wall_decorated','wall_window_open','kitchencounter_straight_A','kitchencounter_straight_A_decorated','kitchencounter_sink_backsplash','stove_multi_countertop','stove_multi_decorated',
   'fridge_A_decorated','shelf_papertowel_decorated','crate_tomatoes','crate_carrots','crate_buns','cuttingboard','pan_A','pot_A','pot_A_stew','plate','food_burger','food_vegetableburger','stew_bowl','food_dinner',
   'food_ingredient_burger_uncooked','food_ingredient_burger_cooked','food_ingredient_burger_trash','food_ingredient_vegetableburger_uncooked','food_ingredient_vegetableburger_cooked',
-  'food_ingredient_ham','food_ingredient_ham_cooked','food_ingredient_ham_trash','food_ingredient_tomato_slices','table_round_A_decorated','chair_A','dishrack_plates','menu'];
+  'food_ingredient_ham','food_ingredient_ham_cooked','food_ingredient_ham_trash','food_ingredient_tomato_slices','table_round_A_decorated','chair_A','dishrack_plates','menu',
+  ...[...new Set(DISHES.flatMap(d=>[d.raw,d.cooked,d.burnt,d.serve]).filter(n=>n&&n.startsWith('k:')))]];
 (async function boot(){
   translateStatic();paintAudio();
   const total=KIT_NAMES.length+1+CUSTOMERS.length;let n=0;const step=()=>{n++;$('loadBar').style.width=(n/total*100).toFixed(0)+'%'};
