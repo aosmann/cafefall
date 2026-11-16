@@ -1,0 +1,21 @@
+{
+  "contract": 1,
+  "id": "cafefall",
+  "name": "Cafefall",
+  "pitch": "Answer right. Serve it hot.",
+  "description": "Run a café with a chef cat. Hungry animals order toast, pizza and cake: answer the question to cook each dish before their patience runs out, and keep a streak for bigger tips.",
+  "color": "#9b5b34",
+  "icon": "icon-512.png",
+  "bank": "EduQ",
+  "score": "coins",
+  "settings": [
+    {"key": "level", "label": "Difficulty", "options": [[1, "Easy"], [2, "Medium"], [3, "Hard"]], "default": "topic"},
+    {"key": "mode", "label": "Run length", "options": [["o10", "10 orders"], ["o20", "20 orders"], ["t60", "60 sec"], ["t90", "90 sec"]], "default": "o10",
+     "custom": {"label": "Custom", "by": "kind", "formats": {"o": "o{no}", "t": "t{nt}"},
+       "fields": [
+         {"key": "kind", "label": "Play for", "options": [["o", "Orders"], ["t", "Seconds"]], "default": "o"},
+         {"key": "no", "label": "Orders", "min": 3, "max": 50, "step": 1, "default": 15, "if": {"kind": "o"}},
+         {"key": "nt", "label": "Time", "unit": "s", "min": 20, "max": 600, "step": 10, "default": 90, "if": {"kind": "t"}}
+       ]}}
+  ]
+}
