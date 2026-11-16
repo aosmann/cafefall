@@ -255,7 +255,7 @@ function show(id,on){$(id).classList.toggle('off',!on)}
 function banner(big,small,kind){const b=$('banner');b.querySelector('span').textContent=big;b.querySelector('small').textContent=small||'';b.className='';if(kind)b.classList.add(kind);void b.offsetWidth;b.classList.add('show')}
 function hint(text){const h=$('hint');if(!text){show('hint',false);return}h.textContent=text;show('hint',true)}
 function popText(x,y,text){const d=el('div','pop',text);d.style.left=x+'px';d.style.top=y+'px';document.body.append(d);setTimeout(()=>d.remove(),1400)}
-function bumpCoins(){const c=$('coinChip');c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');paintHud()}
+function bumpCoins(){const c=$('coinChip');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');paintHud()}
 function flyCoins(x,y,n){if(reduced){bumpCoins();return}const r=$('coinChip').getBoundingClientRect(),to={x:r.left+14,y:r.top+r.height/2-11};
   for(let i=0;i<Math.min(n,6);i++){const d=el('i','fly');d.style.transform=`translate(${x+rnd(-24,24)}px,${y+rnd(-24,8)}px)`;document.body.append(d);
     setTimeout(()=>{d.style.transform=`translate(${to.x}px,${to.y}px) scale(.8)`;d.style.opacity='.5'},40+i*70);setTimeout(()=>{d.remove();if(i===0)bumpCoins()},800+i*70)}}
@@ -323,7 +323,11 @@ function answer(i){
     lastAns={q:Q.img?'This flag':Q.q,img:Q.img||null,answer:Q.answer,picked:Q.answer,ok:1,tag:Q.tag||null};
     $('verdict').textContent=L('Cooked!');$('verdict').className='good';
     if(streak===3||streak===5){banner(L(streak===3?'3 in a row! Tips ×2':'5 in a row! Tips ×3'),'','gold');S.streak()}
-    c.done[idx]=true;cook(c,idx,dish);later(reduced?.35:.6,closeCard)}
+    c.done[idx]=true;cook(c,idx,dish);
+    /* two-dish orders: go straight on to the next dish, no second tap */
+    const more=c.done.indexOf(false);
+    if(more>=0)later(reduced?.4:.75,()=>{if(state==='play'&&cur&&cur.c===c&&c.st==='wait')serve(c,more);else if(cur&&cur.c===c)closeCard()});
+    else later(reduced?.35:.6,closeCard)}
   else{
     if(streak>=3)banner(L('Streak lost'),'','bad');streak=0;
     missed.push({q:Q.img?'This flag':Q.q,img:Q.img,answer:Q.answer,picked:Q.ans[i]});
